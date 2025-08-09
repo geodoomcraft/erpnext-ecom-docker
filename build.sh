@@ -12,7 +12,6 @@ echo "📦 Building Docker image with tag: ${TAG}"
 # Clone frappe_docker
 rm -rf frappe_docker
 git clone https://github.com/frappe/frappe_docker
-cd frappe_docker
 
 # Set apps.json parameter
 APPS_JSON_BASE64=$(base64 -w 0 ./apps.json)
