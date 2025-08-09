@@ -15,7 +15,7 @@ git clone https://github.com/frappe/frappe_docker
 cd frappe_docker
 
 # Set apps.json parameter
-APPS_JSON_BASE64=$(base64 -w 0 ~/apps.json)
+APPS_JSON_BASE64=$(base64 -w 0 ./apps.json)
 
 cd ~/frappe_docker/
 docker buildx build \
