@@ -27,9 +27,9 @@ jobs:
           git clone --depth=1 --branch version-15 https://github.com/frappe/erpnext.git /tmp/erpnext
           git clone --depth=1 --branch main https://github.com/frappe/ecommerce_integrations.git /tmp/ecomm
 
-          FRAPPE_VERSION=$(grep "__version__" /tmp/frappe/frappe/__init__.py | cut -d'"' -f2)
-          ERPNEXT_VERSION=$(grep "__version__" /tmp/erpnext/erpnext/__init__.py | sed -E cut -d'"' -f2)
-          ECOMM_VERSION=$(grep "__version__" /tmp/ecomm/ecommerce_integrations/__init__.py | cut -d'"' -f2)
+          FRAPPE_VERSION=$(grep "__version__" /tmp/frappe/frappe/__init__.py | cut -d '"' -f2)
+          ERPNEXT_VERSION=$(grep "__version__" /tmp/erpnext/erpnext/__init__.py | sed -E cut -d '"' -f2)
+          ECOMM_VERSION=$(grep "__version__" /tmp/ecomm/ecommerce_integrations/__init__.py | cut -d '"' -f2)
 
           echo "Detected Versions:"
           echo "  frappe: $FRAPPE_VERSION"
