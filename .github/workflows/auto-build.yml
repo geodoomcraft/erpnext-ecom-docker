@@ -48,7 +48,7 @@ jobs:
 
           echo "frappe=$FRAPPE_VERSION" >> $GITHUB_OUTPUT
           echo "erpnext=$ERPNEXT_VERSION" >> $GITHUB_OUTPUT
-          echo "ecomm=$ECOMM_VERSION" >> $"GITHUB_OUTPUT"
+          echo "ecomm=$ECOMM_VERSION" >> $GITHUB_OUTPUT
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
