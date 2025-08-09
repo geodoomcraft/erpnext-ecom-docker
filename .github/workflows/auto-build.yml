@@ -1,0 +1,83 @@
+name: Auto Build ERPNext Image
+
+on:
+  schedule:
+    - cron: "0 3 * * *"  # daily at 3am UTC
+  workflow_dispatch:  # allow manual trigger
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Install jq and git
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq git
+
+      - name: Check upstream versions
+        id: check_versions
+        run: |
+          git clone --depth=1 --branch version-15 https://github.com/frappe/frappe.git /tmp/frappe
+          git clone --depth=1 --branch version-15 https://github.com/frappe/erpnext.git /tmp/erpnext
+          git clone --depth=1 --branch main https://github.com/frappe/ecommerce_integrations.git /tmp/ecomm
+
+          FRAPPE_VERSION=$(grep "__version__" /tmp/frappe/frappe/__init__.py | cut -d"'" -f2)
+          ERPNEXT_VERSION=$(grep "__version__" /tmp/erpnext/erpnext/__init__.py | cut -d"'" -f2)
+          ECOMM_VERSION=$(grep "__version__" /tmp/ecomm/ecommerce_integrations/__init__.py | cut -d"'" -f2)
+
+          echo "Detected Versions:"
+          echo "  frappe: $FRAPPE_VERSION"
+          echo "  erpnext: $ERPNEXT_VERSION"
+          echo "  ecomm: $ECOMM_VERSION"
+
+          LAST_FRAPPE=$(jq -r '.frappe' version.json)
+          LAST_ERPNEXT=$(jq -r '.erpnext' version.json)
+          LAST_ECOMM=$(jq -r '.ecommerce_integrations' version.json)
+
+          if [[ "$FRAPPE_VERSION" != "$LAST_FRAPPE" || "$ERPNEXT_VERSION" != "$LAST_ERPNEXT" || "$ECOMM_VERSION" != "$LAST_ECOMM" ]]; then
+            echo "should_build=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_build=false" >> $GITHUB_OUTPUT
+          fi
+
+          echo "frappe=$FRAPPE_VERSION" >> $GITHUB_OUTPUT
+          echo "erpnext=$ERPNEXT_VERSION" >> $GITHUB_OUTPUT
+          echo "ecomm=$ECOMM_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        if: steps.check_versions.outputs.should_build == 'true'
+        env:
+          FRAPPE_VERSION: ${{ steps.check_versions.outputs.frappe }}
+          ERPNEXT_VERSION: ${{ steps.check_versions.outputs.erpnext }}
+          ECOMM_VERSION: ${{ steps.check_versions.outputs.ecomm }}
+        run: |
+          chmod +x ./build.sh
+          ./build.sh
+
+      - name: Update version.json
+        if: steps.check_versions.outputs.should_build == 'true'
+        run: |
+          echo "{
+            \"frappe\": \"${{ steps.check_versions.outputs.frappe }}\",
+            \"erpnext\": \"${{ steps.check_versions.outputs.erpnext }}\",
+            \"ecommerce_integrations\": \"${{ steps.check_versions.outputs.ecomm }}\"
+          }" > version.json
+
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add version.json
+          git commit -m "Update version.json after build"
+          git push
+
