@@ -25,6 +25,8 @@ docker buildx build \
   --build-arg=APPS_JSON_BASE64=${APPS_JSON_BASE64} \
   --tag=docker.io/geodoomcraft/erpnext-ecom:latest \
   --tag=docker.io/geodoomcraft/erpnext-ecom:${TAG} \
+  --cache-from=type=registry,ref=docker.io/geodoomcraft/erpnext-ecom:buildcache \
+  --cache-to=type=registry,ref=docker.io/geodoomcraft/erpnext-ecom:buildcache,mode=max \
   --file=images/layered/Containerfile .
 
 echo "✅ Image pushed: geodoomcraft/erpnext-ecom:${TAG}"
