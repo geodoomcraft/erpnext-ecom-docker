@@ -1,5 +1,9 @@
 #!/bin/bash
 set -e
+echo "👉 FRAPPE_VERSION: $FRAPPE_VERSION"
+echo "👉 ERPNEXT_VERSION: $ERPNEXT_VERSION"
+echo "👉 ECOMM_VERSION: $ECOMM_VERSION"
+
 set -x  # enable debug output
 
 FRAPPE_VERSION=${FRAPPE_VERSION:-"0.0.0"}
