@@ -26,7 +26,7 @@ The latest tag will always contain the latest build.
 ## Usage
 Recommended usage of this image is to use the official pwd.yml for docker compose and modify it slightly to work with the ecommerce integration.
 
-Firstly make a copy of the pwd.yml (https://github.com/frappe/frappe_docker/blob/main/pwd.yml⁠) and then replace the frappe erpnext image with this one. Eg. Replace frappe/erpnext:vXX.XX.X with geodoomcraft/erpnext-ecom:v15-frappe-15.76.0-erpnext-15.74.0-ecom-1.20.1
+Firstly make a copy of the pwd.yml ([https://github.com/frappe/frappe_docker/blob/main/pwd.yml](https://github.com/frappe/frappe_docker/blob/main/pwd.yml)⁠) and then replace the frappe erpnext image with this one. Eg. Replace frappe/erpnext:vXX.XX.X with geodoomcraft/erpnext-ecom:v15-frappe-15.76.0-erpnext-15.74.0-ecom-1.20.1
 
 Next there is a line in create-site service which creates the site
 
