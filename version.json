@@ -1,5 +1,5 @@
 {
-  "frappe": "15.82.1",
-  "erpnext": "15.79.1",
-  "ecommerce_integrations": "1.20.1"
+  "frappe": "15.83.0",
+  "erpnext": "15.80.0",
+  "ecommerce_integrations": "1.20.2"
 }
